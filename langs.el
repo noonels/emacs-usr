@@ -38,12 +38,11 @@
         (master "/usr/local/bin/julia")))
 
 ;; Go
-(use-package go-ts-mode
+(use-package go-mode
   :ensure t
   :hook
-  (go-mode . go-ts-mode)
-  (go-ts-mode . eglot-ensure)
-  (go-ts-mode . tree-sitter-hl-mode)
+  (go-mode . eglot-ensure)
+  (go-mode . tree-sitter-hl-mode)
   :config
   (setq go-ts-indent-level 4))
 
