@@ -12,11 +12,15 @@
   :hook (python-ts-mode . python-black-on-save-mode-enable-dwim))
 
 ;; TypeScript
-(use-package typescript-mode
+
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+
+;; Prettier
+(use-package prettier
   :ensure t
-  :mode "\\.ts\\'"
-  :config
-  (setq typescript-indent-level 2))
+  :hook (typescript-ts-mode . prettier-mode)
+  (tsx-ts-mode . prettier-mode))
 
 ;; Julia
 (use-package vterm :ensure t)
