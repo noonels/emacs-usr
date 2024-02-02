@@ -5,19 +5,18 @@
 ;;
 ;;; Code:
 
-;; Python
+;;; Python
 (use-package python-black
   :demand t
   :after python
   :hook (python-ts-mode . python-black-on-save-mode-enable-dwim))
 
+;;; TypeScript
 (use-package web-mode
   :ensure t)
 
-;; TypeScript
 (define-derived-mode typescriptreact-mode web-mode "TypescriptReact"
   "A major mode for tsx.")
-
 (use-package typescript-mode
   :mode (("\\.ts\\'" . typescript-mode)
          ("\\.tsx\\'" . typescriptreact-mode)))
@@ -68,7 +67,7 @@
 ;;     (define-key mode-map (kbd "C-c j w") 'jtsx-wrap-in-jsx-element)
 ;;     (define-key mode-map (kbd "C-c j u") 'jtsx-unwrap-jsx)
 ;;     (define-key mode-map (kbd "C-c j d") 'jtsx-delete-jsx-node))
-    
+
 ;;   (defun jtsx-bind-keys-to-jtsx-jsx-mode-map ()
 ;;       (jtsx-bind-keys-to-mode-map jtsx-jsx-mode-map))
 
@@ -84,7 +83,7 @@
   :hook (typescript-ts-mode . prettier-mode)
   (tsx-ts-mode . prettier-mode))
 
-;; Julia
+;;; Julia
 (use-package vterm :ensure t)
 (use-package julia-repl)
 (use-package eglot-jl)
@@ -103,7 +102,9 @@
       '((default "/usr/local/bin/julia")
         (master "/usr/local/bin/julia")))
 
-;; Go
+(setq-default indent-tabs-mode nil)
+
+;;; Go
 (use-package go-mode
   :ensure t
   :hook
@@ -112,7 +113,14 @@
   :config
   (setq go-ts-indent-level 4))
 
-;; LaTeX
+(use-package zig-mode
+  :ensure t
+  :mode ("\\.zig\\'")
+  :hook
+  (zig-mode . eglot-ensure)
+  (zig-mode . tree-sitter-hl-mode))
+
+;;; LaTeX
 (use-package tex
   :defer t
   :straight auctex
@@ -127,12 +135,24 @@
   :straight auctex
   :ensure auctex)
 
-;; Protobuf
+;;; Protobuf
 (use-package protobuf-mode
   :straight t)
 
-;; Fortran 90+
+;;; Godot
+(use-package gdscript-mode
+    :straight (gdscript-mode
+               :type git
+               :host github
+               :repo "godotengine/emacs-gdscript-mode"))
+
+;;; Fortran 90+
 (add-to-list 'eglot-server-programs '(f90-mode . ("fortls" "--notify_init" "--nthreads=4")))
+
+;;; LISP
+;; no tabs in lisp
+(add-hook 'emacs-lisp-mode-hook (lambda () (setq-local indent-tabs-mode nil)))
+(add-hook 'lisp-mode-hook (lambda () (setq-local indent-tabs-mode nil)))
 
 (provide 'langs)
 ;;; langs.el ends here
