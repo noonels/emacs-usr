@@ -27,7 +27,7 @@
   (setq doom-modeline-height 35)
   (doom-modeline-def-modeline 'main
     '(bar matches buffer-info remote-host buffer-position parrot selection-info)
-    '(misc-info minor-modes checker input-method buffer-encoding major-mode process vcs "  "))) ; <-- added padding here
+    '(misc-info minor-modes checker input-method buffer-encoding major-mode process vcs "  ")))
     
 
 (provide 'custom)

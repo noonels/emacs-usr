@@ -17,6 +17,21 @@
 
 (define-derived-mode typescriptreact-mode web-mode "TypescriptReact"
   "A major mode for tsx.")
+
+(use-package prettier-js
+  :ensure t
+  :hook
+  (typescript-ts-mode . prettier-js-mode)
+  (typescriptreact-mode . prettier-js-mode)
+  (typescript-mode . prettier-js-mode))
+
+(use-package add-node-modules-path
+  :ensure t
+  :hook
+  (typescript-ts-mode . add-node-modules-path)
+  (typescriptreact-mode . add-node-modules-path)
+  (typescript-mode . add-node-modules-path))
+
 (use-package typescript-mode
   :mode (("\\.ts\\'" . typescript-mode)
          ("\\.tsx\\'" . typescriptreact-mode)))
