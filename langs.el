@@ -18,12 +18,13 @@
 (define-derived-mode typescriptreact-mode web-mode "TypescriptReact"
   "A major mode for tsx.")
 
-(use-package prettier-js
+(use-package prettier
   :ensure t
   :hook
-  (typescript-ts-mode . prettier-js-mode)
-  (typescriptreact-mode . prettier-js-mode)
-  (typescript-mode . prettier-js-mode))
+  (typescript-ts-mode . prettier-mode)
+  (typescriptreact-mode . prettier-mode)
+  (typescript-mode . prettier-mode))
+  
 
 (use-package add-node-modules-path
   :ensure t
@@ -93,10 +94,10 @@
 ;;   (add-hook 'jtsx-tsx-mode-hook 'jtsx-bind-keys-to-jtsx-tsx-mode-map))
 
 ;; Prettier
-(use-package prettier
-  :ensure t
-  :hook (typescript-ts-mode . prettier-mode)
-  (tsx-ts-mode . prettier-mode))
+;; (use-package prettier
+;;   :ensure t
+;;   :hook (typescript-ts-mode . prettier-mode)
+;;   (tsx-ts-mode . prettier-mode))
 
 ;;; Julia
 (use-package vterm :ensure t)
