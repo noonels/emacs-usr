@@ -18,13 +18,28 @@
 (define-derived-mode typescriptreact-mode web-mode "TypescriptReact"
   "A major mode for tsx.")
 
-(use-package prettier
-  :ensure t
-  :hook
-  (typescript-ts-mode . prettier-mode)
-  (typescriptreact-mode . prettier-mode)
-  (typescript-mode . prettier-mode))
-  
+(use-package apheleia
+  :config
+  (setf (alist-get 'prettier apheleia-formatters)
+        '(npx "prettier"
+              "--trailing-comma"  "all"
+              "--arrow-parens"    "always"
+              "--tab-width"       "2"
+              "--single-quote"    "true"
+              "--semi"            "true"
+              "--use-tabs"        "false"
+              file))
+  (setf (alist-get 'clj-zprint apheleia-formatters)
+        '("clj-zprint"
+          "{:style [:community :justified] :map {:comma? false}} <"
+          file))
+  (add-to-list 'apheleia-mode-alist '(typescriptreact-mode . prettier))
+  (add-to-list 'apheleia-mode-alist '(typescript-mode . prettier))
+  (add-to-list 'apheleia-mode-alist '(typescript-ts-mode . prettier))
+  (add-to-list 'apheleia-mode-alist '(web-mode . prettier))
+  (add-to-list 'apheleia-mode-alist '(clojure-mode . clj-zprint))
+  (apheleia-global-mode t))
+
 
 (use-package add-node-modules-path
   :ensure t
@@ -35,7 +50,13 @@
 
 (use-package typescript-mode
   :mode (("\\.ts\\'" . typescript-mode)
-         ("\\.tsx\\'" . typescriptreact-mode)))
+         ("\\.tsx\\'" . typescriptreact-mode))
+  :hook
+  (typescript-mode . (lambda () (setq tab-width 2)))
+  (typescriptreact-mode . (lambda () (setq tab-width 2)))
+  (typescript-ts-mode . (lambda () (setq tab-width 2)))
+  :custom
+  (typescript-indent-level 2))
 
 (use-package eglot
   :ensure t
@@ -48,56 +69,6 @@
   (cl-pushnew '((js-mode typescript-mode typescriptreact-mode) . ("typescript-language-server" "--stdio"))
               eglot-server-programs
               :test #'equal))
-;;(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
-;;(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
-;; (use-package jtsx
-;;   :ensure t
-;;   :mode (("\\.jsx?\\'" . jtsx-jsx-mode)
-;;          ("\\.tsx?\\'" . jtsx-tsx-mode))
-;;   :commands jtsx-install-treesit-language
-;;   :hook ((jtsx-jsx-mode . hs-minor-mode)
-;;          (jtsx-tsx-mode . hs-minor-mode))
-;;   :custom
-;;   Optional customizations
-;;   (js-indent-level 2)
-;;   (typescript-ts-mode-indent-offset 2)
-;;   (jtsx-switch-indent-offset 0)
-;;   (jtsx-indent-statement-block-regarding-standalone-parent nil)
-;;   (jtsx-jsx-element-move-allow-step-out t)
-;;   (jtsx-enable-jsx-electric-closing-element t)
-;;   (jtsx-enable-electric-open-newline-between-jsx-element-tags t)
-;;   (jtsx-enable-all-syntax-highlighting-features t)
-;;   :config
-;;   (defun jtsx-bind-keys-to-mode-map (mode-map)
-;;     "Bind keys to MODE-MAP."
-;;     (define-key mode-map (kbd "C-c C-j") 'jtsx-jump-jsx-element-tag-dwim)
-;;     (define-key mode-map (kbd "C-c j o") 'jtsx-jump-jsx-opening-tag)
-;;     (define-key mode-map (kbd "C-c j c") 'jtsx-jump-jsx-closing-tag)
-;;     (define-key mode-map (kbd "C-c j r") 'jtsx-rename-jsx-element)
-;;     (define-key mode-map (kbd "C-c <down>") 'jtsx-move-jsx-element-tag-forward)
-;;     (define-key mode-map (kbd "C-c <up>") 'jtsx-move-jsx-element-tag-backward)
-;;     (define-key mode-map (kbd "C-c C-<down>") 'jtsx-move-jsx-element-forward)
-;;     (define-key mode-map (kbd "C-c C-<up>") 'jtsx-move-jsx-element-backward)
-;;     (define-key mode-map (kbd "C-c C-S-<down>") 'jtsx-move-jsx-element-step-in-forward)
-;;     (define-key mode-map (kbd "C-c C-S-<up>") 'jtsx-move-jsx-element-step-in-backward)
-;;     (define-key mode-map (kbd "C-c j w") 'jtsx-wrap-in-jsx-element)
-;;     (define-key mode-map (kbd "C-c j u") 'jtsx-unwrap-jsx)
-;;     (define-key mode-map (kbd "C-c j d") 'jtsx-delete-jsx-node))
-
-;;   (defun jtsx-bind-keys-to-jtsx-jsx-mode-map ()
-;;       (jtsx-bind-keys-to-mode-map jtsx-jsx-mode-map))
-
-;;   (defun jtsx-bind-keys-to-jtsx-tsx-mode-map ()
-;;       (jtsx-bind-keys-to-mode-map jtsx-tsx-mode-map))
-
-;;   (add-hook 'jtsx-jsx-mode-hook 'jtsx-bind-keys-to-jtsx-jsx-mode-map)
-;;   (add-hook 'jtsx-tsx-mode-hook 'jtsx-bind-keys-to-jtsx-tsx-mode-map))
-
-;; Prettier
-;; (use-package prettier
-;;   :ensure t
-;;   :hook (typescript-ts-mode . prettier-mode)
-;;   (tsx-ts-mode . prettier-mode))
 
 ;;; Julia
 (use-package vterm :ensure t)
@@ -157,10 +128,10 @@
 
 ;;; Godot
 (use-package gdscript-mode
-    :straight (gdscript-mode
-               :type git
-               :host github
-               :repo "godotengine/emacs-gdscript-mode"))
+  :straight (gdscript-mode
+             :type git
+             :host github
+             :repo "godotengine/emacs-gdscript-mode"))
 
 ;;; Fortran 90+
 (add-to-list 'eglot-server-programs '(f90-mode . ("fortls" "--notify_init" "--nthreads=4")))
